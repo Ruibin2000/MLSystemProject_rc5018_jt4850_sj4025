@@ -32,11 +32,10 @@ link to their contributions in all repos here. -->
 
 | Name                            | Responsible for | Link to their commits in this repo |
 |---------------------------------|-----------------|------------------------------------|
-| All team members                |                 |                                    |
 | Ruibin Chen                     |  model training |                                    |
 | Shizhen Jia                     |  model serving  |                                    |
 | Jialin Tian                     |  data pipeline  |                                    |
-| Team member 4 (if there is one) |                 |                                    |
+
 
 
 
@@ -73,7 +72,7 @@ The table below shows an example, it is not a recommendation. -->
 | Floating IPs    | 1 for entire project duration, 1 for sporadic use |               |
 | etc             |                                                   |               |
 
-### Detailed design plan (JT)
+### Detailed design plan
 
 <!-- In each section, you should describe (1) your strategy, (2) the relevant parts of the 
 diagram, (3) justification for your strategy, (4) relate back to lecture material, 
