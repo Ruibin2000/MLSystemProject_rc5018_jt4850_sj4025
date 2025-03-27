@@ -14,11 +14,10 @@ propose a system for a science problem, for example.)
 -->
 
 <!-- 
-Robot --> embed system, light model, memory
+Robot: embed system, light model, memory
 Disease in different plants with specific disease
 Scalable for model training, do not need to train for whole model when discovering a new disease for one plant. Just need to train the submodel
-Easy for re-training.
-The model consists of two submodels: classification for plant categories and another disease identification model. They work sequatially.
+Easy for re-training.The model consists of two submodels: classification for plant categories and another disease identification model. They work sequatially.
 status quo used in the business or service
 infernce time, accuracy, memory usage
 -->
