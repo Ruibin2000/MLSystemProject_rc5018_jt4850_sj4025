@@ -12,15 +12,21 @@ status quo used in the business or service? What business metric are you going t
 judged on? (Note that the “service” does not have to be for general users; you can 
 propose a system for a science problem, for example.)
 -->
+
+<!-- 
 1. Robot --> embed system, light model, memory
 2. Disease in different plants with specific disease
 3. Scalable for model training, do not need to train for whole model when discovering a new disease for one plant. Just need to train the submodel
 4. Easy for re-training.
 5. The model consists of two submodels: classification for plant categories and another disease identification model. They work sequatially.
-
 6. **status quo used in the business or service**
-
 7. infernce time, accuracy, memory usage
+-->
+As the global population grows, so does the demand for food production. Early and accurate detection of plant diseases is crucial for maintaining crop health and yield. Many agricultural businesses already use imaging tools, but disease diagnosis often relies on manual comparison with libraries or expert consultation—methods that are costly, slow, and difficult to scale.
+
+We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. The system features two sub-models: one for plant species classification and another for disease identification. This modular design allows efficient retraining—only the relevant sub-model needs updating when a new disease is discovered.
+
+The value proposition lies in reducing diagnostic time and cost while improving accuracy. Designed to be lightweight and suitable for embedded systems or robots, the model offers a scalable, affordable upgrade to current agricultural practices.
 
 ### Contributors
 
@@ -53,8 +59,8 @@ conditions under which it may be used. -->
 
 |              | How it was created | Conditions of use |
 |--------------|--------------------|-------------------|
-| Data set 1   |                    |                   |
-| Data set 2   |                    |                   |
+| Plant Categories   |   merge from original plant dataset for plants class    |      used for the first-layer model for plant classification      |
+| Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for second-layer diseases detector    |
 | Base model 1 |                    |                   |
 | etc          |                    |                   |
 
