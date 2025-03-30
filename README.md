@@ -51,6 +51,42 @@ link to their contributions in all repos here. -->
 <!-- Overall digram of system. Doesn't need polish, does need to show all the pieces. 
 Must include: all the hardware, all the containers/software platforms, all the models, 
 all the data. -->
+```mermaid
+graph TD
+    subgraph Hardware
+        A1[Local Machine]
+        A2[GPU Server:M100 for Training]
+        A3[Pi: for small model testing]
+    end
+
+    subgraph DataSources
+        D1[Database: will be modified to suit our need]
+    end
+
+    subgraph Platform
+        P1[Jupyter Notebook]
+        P2[Docker Container:PyTorch, TensorFlow,ONNX, FastAPI]
+        P3[MLFlow: Model Tracking]
+    end
+
+    subgraph MLPipeline
+        M1[DataPipeline: online Database 
+        PlantVillage Dataset]
+        M2[Model Training]
+        M3[Model Evaluation]
+        M4[Model Deployment]
+    end
+
+    D1 --> M1
+    M1 --> M2
+    M2 --> M3
+    M3 --> M4
+
+    P1 --> M1
+    P2 --> M2
+    P3 --> M4
+    A2 --> P2
+    A1 --> P1
 
 ### Summary of outside materials (RC)
 
