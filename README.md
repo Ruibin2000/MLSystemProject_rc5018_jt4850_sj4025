@@ -135,7 +135,13 @@ and which optional "difficulty" points you are attempting. -->
 
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
 optional "difficulty" points you are attempting. -->
+##### For Persisten storage, the lab 8 haven't be released yet, but I assume we everyting inclueding model traning artifacts, test artifacts, models, container images and data can be stored on Chameloeon. 
 
+##### Offline data, we will set up our data locally, and then upload it to Chameloeon for future traning and also so everyone in our group can access it. 
+
+##### Data pipelines: We plan to implement a modular ETL pipeline that ingests offline image data, applies standardized preprocessing (resizing, normalization, optional segmentation masking), and structures the data with two levels of labels: leaf species and disease type. 
+
+##### Online data: Will write a listening script to catch data from a directory, and then process using steps similar to process picture to fit our need for different model, but note that there is a segmented picture section in the model, so we need to train a segmentation model for online data only.
 #### Continuous X (SJ)
 
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
