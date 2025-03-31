@@ -131,6 +131,64 @@ and which optional "difficulty" points you are attempting. -->
 <!-- Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
 and which optional "difficulty" points you are attempting. -->
 
+
+##### 1. Model Serving
+
+1. **API Endpoint**  
+   - Unified REST API (FastAPI/Flask) wraps both the leaf-variety and disease-classification models.  
+   - Receives an image, routes to the appropriate model(s), and returns the final disease prediction.
+
+2. **Key Requirements**  
+   - **Latency**: Sub-500ms response for single images.  
+   - **Throughput**: 5–10 concurrent requests in a cloud environment.
+
+3. **Model Optimizations**  
+   - **Graph Compilation**: Operator fusion, constant folding, hardware-specific kernels.  
+   - **Reduced Precision**: FP16/INT8 quantization.  
+   - **Pruning / Distillation** (optional): Further compression for faster inference.
+
+4. **System Optimizations**  
+   - **Warm Starts**: Keep models loaded in memory.  
+   - **Concurrent Execution**: Multiple replicas (auto-scaling) with load balancing.  
+   - **Dynamic Batching**: Combine requests for improved GPU/CPU utilization.  
+   - **Ensembling** (extra complexity): If multiple models are needed, trade-off added latency for higher accuracy.
+
+5. **Deployment**  
+   - **Cloud**: Scalable, powerful hardware; subject to network latency.  
+   - **Edge**: Low/no network latency; smaller resource-friendly models typically required.
+
+---
+
+##### 2. Evaluation & Monitoring
+
+1. **Offline Evaluation**  
+   - **General Metrics**: Loss, accuracy, F1; domain-specific (BLEU, ROUGE, perplexity).  
+   - **Slice-Based Evaluation**: Performance on subsets (rare diseases, specific leaf varieties).  
+   - **Operational Metrics**: Inference latency, throughput, memory footprint, retraining cost/time.  
+   - **Behavioral Testing**: Template-based tests for robustness under benign perturbations.  
+   - **Explainability**: SHAP, LIME, saliency maps.  
+   - **Regression Testing**: Verify fixes for known errors remain fixed.
+
+2. **Automated Testing Pipeline**  
+   - Integrate all offline tests into a CI/CD pipeline.  
+   - Optional **human-in-the-loop** or **GenAI-in-the-loop** for deeper or “red team” testing.
+
+3. **Online Evaluation**  
+   - **Shadow Testing**: Duplicate live user requests to the new model (not shown to users).  
+   - **Canary Testing**: Route a small fraction of live traffic to the new model, monitor metrics.  
+   - **A/B Testing**: Split production traffic, measure business metrics (CTR, revenue).
+
+4. **Production Monitoring**  
+   - **Drift Detection**: Monitor input distribution (covariate shift), label frequencies, and concept drift.  
+   - **Alerts**: Trigger notifications when performance declines.  
+   - **Delayed/Partial Labels**: Incorporate user feedback or delayed ground truth as available.  
+   - **Human Labeling Pipeline**: Sample uncertain or high-impact predictions to get fresh labels.
+
+5. **Closing the Loop**  
+   - Periodically retrain with new data if performance drops below thresholds.  
+   - Maintain updated, high-quality data sets for incremental model improvements.
+
+
 #### Data pipeline (JT)
 
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
