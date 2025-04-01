@@ -239,4 +239,7 @@ optional "difficulty" points you are attempting. -->
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
 optional "difficulty" points you are attempting. -->
 
+##### Unit 1: Multi-Models
+##### Unit 8: Interactive data dashboard
+
 
