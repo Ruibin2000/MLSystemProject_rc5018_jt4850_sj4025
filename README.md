@@ -98,8 +98,9 @@ conditions under which it may be used. -->
 |--------------|--------------------|-------------------|
 | Plant Categories   |   merge from original plant dataset for plants class    |      used for the first-layer model for plant classification      |
 | Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for second-layer diseases detector    |
-| Base model 1 |                    |                   |
-| etc          |                    |                   |
+| MobileNetV2 |    import from the keras application and finetune                |  candidate for edge user, robot       |
+| EfficientNetB7         |     import from the keras application   |      candidate for the cloud traning (high accuracy)             |
+| llma 3B, 7B, 13B    | import from openllm as lab | candidate for the cloud training |
 
 
 ### Summary of infrastructure requirements (SJ)
@@ -125,6 +126,37 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
+
+#### 1. Model traning at scale (unit 4)
+##### 1.1 Train and re-train
+Our selected candidate models can be trained on the required datasets and fine-tuned at scale to fit specific dataset for better performance. For large model training, we plan to use mutiple GPU to accelarate the training process.
+With the benefit of our design on the two layers model, further discovered diseases of a specific plant only need to re-train the layer-2 model without training on layer-1 model. It is easy for re-training.
+
+
+##### 1.2 well-justified choices for modeling.
+For first layer model which classifies the type of the plants, the model needs to train on a large dataset. 
+While the sub-layer model may train on the smaller datasets with higher accuracy.
+Additionally, the performance of models on specific disease can be different. 
+These model will be compared and selected based on the test datasets
+
+#### 2. Model training infrastructure and platform (unit 5)
+##### 2.1 Experiment tracking
+The following training plan are proposed to run:
+- MobileNetV2 trains on the plant categories
+- MobileNetV2 trains on the disease categories
+- EfficientNetB7 trains on the plant categories
+- EfficientNetB7 trains on the disease categories
+- llma 3B trains on the plant categories
+- llma 3B trains on the disease categories
+- llma 7B trains on the plant categories
+- llma 7B trains on the disease categories
+- llma 13B trains on the plant categories
+- llma 13B trains on the disease categories
+
+MLFlow experiment tracking server on Chameleon will be hosted to track and evaluate the experiment details
+
+##### 2.2 Scheduling training jobs
+Like the lab, a Ray cluster will be implemented and run on the server. The required training jobs will be submitted in pipline.
 
 #### Model Serving and Monitoring Platforms (SJ)
 
