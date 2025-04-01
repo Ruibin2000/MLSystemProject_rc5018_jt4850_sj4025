@@ -70,8 +70,7 @@ graph TD
     end
 
     subgraph MLPipeline
-        M1[DataPipeline: online Database 
-        PlantVillage Dataset]
+        M1[DataPipeline]
         M2[Model Training, Serving]
         M3[Model Evaluation]
         M4[Model Deployment]
