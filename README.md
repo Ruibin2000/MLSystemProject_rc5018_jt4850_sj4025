@@ -87,7 +87,7 @@ graph TD
     A2 --> P2
     A1 --> P1
 ```
-<img src="diagram/system_design.jpg" alt="system_design" />
+<img src="diagram/system_design.png" alt="system_design" />
 
 
 ### Summary of outside materials (RC)
