@@ -87,7 +87,10 @@ graph TD
     P3 --> M4
     A2 --> P2
     A1 --> P1
-``` 
+```
+<img src="diagram/system_design.jpg" alt="system_design" style="zoom:22%;" />
+
+
 ### Summary of outside materials (RC)
 
 <!-- In a table, a row for each dataset, foundation model. 
