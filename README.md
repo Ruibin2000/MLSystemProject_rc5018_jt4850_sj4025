@@ -98,8 +98,8 @@ conditions under which it may be used. -->
 |--------------|--------------------|-------------------|
 | Plant Categories   |   merge from original plant dataset for plants class    |      used for the first-layer model for plant classification      |
 | Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for second-layer diseases detector    |
-| MobileNetV2 |    import from the keras application and finetune                |  candidate for edge user, robot       |
-| EfficientNetB7         |     import from the keras application   |      candidate for the cloud traning (high accuracy)             |
+| MobileNetV2 |    import from the Pytorch application and finetune                |  candidate for edge user, robot       |
+| EfficientNetB7         |     import from the Pytorch application   |      candidate for the cloud traning (high accuracy)             |
 | llma 3B, 7B, 13B    | import from openllm as lab | candidate for the cloud training |
 
 
