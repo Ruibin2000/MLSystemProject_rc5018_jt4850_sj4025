@@ -25,7 +25,12 @@ infernce time, accuracy, memory usage
 
 As the global population grows, so does the demand for food production. Early and accurate detection of plant diseases is crucial for maintaining crop health and yield. Many agricultural businesses already use imaging tools, but disease diagnosis often relies on manual comparison with libraries or expert consultation—methods that are costly, slow, and difficult to scale.
 
-We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. The system features two sub-models: one for plant species classification and another for disease identification. This modular design allows efficient retraining—only the relevant sub-model needs updating when a new disease is discovered.
+We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. The system features two classification models and one data segmentation model: 
+1. Model 0 for plant species classification 
+2. Sub-Models for disease identification at specific plant categories. 
+3. Model 1 for data segmantation which aims to improve the prediction performance
+
+This modular design allows efficient retraining on particular scale-up tasks. For instance, only the apple Sub-Model needs re-train if a new disease of apple leaf is found, as the shape of apple leaf is the same.
 
 The value proposition lies in reducing diagnostic time and cost while improving accuracy. Designed to be lightweight and suitable for embedded systems or robots, the model offers a scalable, affordable upgrade to current agricultural practices.
 
@@ -98,8 +103,8 @@ conditions under which it may be used. -->
 
 |              | How it was created | Conditions of use |
 |--------------|--------------------|-------------------|
-| Plant Categories   |   merge from original plant dataset for plants class    |      used for the first-layer model for plant classification      |
-| Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for second-layer diseases detector    |
+| Plant Categories   |   merge from original plant dataset for plants class    |      used for the Model 0 for plant classification      |
+| Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for Sub-Model diseases detector    |
 | MobileNetV2 |    import from the Pytorch application and finetune                |  candidate for edge user, robot       |
 | EfficientNetB7         |     import from the Pytorch application   |      candidate for the cloud traning (high accuracy)             |
 | llma 3B, 7B, 13B    | import from openllm as lab | candidate for the cloud training |
@@ -129,19 +134,18 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
 
-#### 1. Model traning at scale (unit 4)
+#### 1. Model traning at scale
 ##### 1.1 Train and re-train
 Our selected candidate models can be trained on the required datasets and fine-tuned at scale to fit specific dataset for better performance. For large model training, we plan to use mutiple GPU to accelarate the training process.
-With the benefit of our design on the two layers model, further discovered diseases of a specific plant only need to re-train the layer-2 model without training on layer-1 model. It is easy for re-training.
+With the benefit of our design on the two cascading classification models, further discovered diseases of a specific plant only need to re-train the Sub-Models without training on model 0. It is easy for re-training.
 
 
 ##### 1.2 well-justified choices for modeling.
-For first layer model which classifies the type of the plants, the model needs to train on a large dataset. 
-While the sub-layer model may train on the smaller datasets with higher accuracy.
-Additionally, the performance of models on specific disease can be different. 
-These model will be compared and selected based on the test datasets
+For Model 0 which classifies the type of the plants, the model needs to train on a large dataset. While the Sub-Models may train on the smaller datasets but requires higher accuracy.
+Additionally, the performance of Sub-Models on specific disease can be different. 
+These model will be compared and selected based on the test datasets performance (especially for higher accuracy)
 
-#### 2. Model training infrastructure and platform (unit 5)
+#### 2. Model training infrastructure and platform 
 ##### 2.1 Experiment tracking
 The following training plan are proposed to run:
 - MobileNetV2 trains on the plant categories
@@ -167,36 +171,36 @@ Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements,
 and which optional "difficulty" points you are attempting. 
 -->
 
-### 1. Model Serving
+#### 1. Model Serving
 
-#### 1.1. API Endpoint
+##### 1.1. API Endpoint
 - Unified REST API (FastAPI/Flask) wraps both the leaf-variety and disease-classification models.  
 - Receives an image, routes to the appropriate model(s), and returns the final disease prediction.
 
-#### 1.2. Key Requirements
+##### 1.2. Key Requirements
 - **Latency**: Sub-500ms response for single images.  
 - **Throughput**: 5–10 concurrent requests in a cloud environment.
 
-#### 1.3. Model Optimizations
+##### 1.3. Model Optimizations
 - **Graph Compilation**: Operator fusion, constant folding, hardware-specific kernels.  
 - **Reduced Precision**: FP16/INT8 quantization.  
 - **Pruning / Distillation** (optional): Further compression for faster inference.
 
-#### 1.4. System Optimizations
+##### 1.4. System Optimizations
 - **Warm Starts**: Keep models loaded in memory for minimal startup latency.  
 - **Concurrent Execution**: Multiple replicas (auto-scaling) with load balancing.  
 - **Dynamic Batching**: Combine requests for improved GPU/CPU utilization.  
 - **Ensembling** (extra complexity): If multiple models are needed, trade off added latency for higher accuracy.
 
-#### 1.5. Deployment
+##### 1.5. Deployment
 - **Cloud**: Scalable, powerful hardware; subject to network latency.  
 - **Edge**: Low/no network latency; typically requires smaller, resource-friendly models.
 
----
+<!-- --- -->
 
-### 2. Evaluation & Monitoring
+#### 2. Evaluation & Monitoring
 
-#### 2.1. Offline Evaluation
+##### 2.1. Offline Evaluation
 - **General Metrics**: Loss, accuracy, F1; domain-specific (BLEU, ROUGE, perplexity).  
 - **Slice-Based Evaluation**: Performance on subsets (rare diseases, specific leaf varieties).  
 - **Operational Metrics**: Inference latency, throughput, memory footprint, retraining cost/time.  
@@ -204,22 +208,22 @@ and which optional "difficulty" points you are attempting.
 - **Explainability**: SHAP, LIME, saliency maps.  
 - **Regression Testing**: Verify fixes for known errors remain fixed.
 
-#### 2.2. Automated Testing Pipeline
+##### 2.2. Automated Testing Pipeline
 - Integrate all offline tests into a CI/CD pipeline.  
 - Optional **human-in-the-loop** or **GenAI-in-the-loop** for deeper or “red team” testing.
 
-#### 2.3. Online Evaluation
+##### 2.3. Online Evaluation
 - **Shadow Testing**: Duplicate live user requests to the new model (not shown to users).  
 - **Canary Testing**: Route a small fraction of live traffic to the new model, monitor key metrics.  
 - **A/B Testing**: Split production traffic and measure business metrics (CTR, revenue).
 
-#### 2.4. Production Monitoring
+##### 2.4. Production Monitoring
 - **Drift Detection**: Monitor input distribution (covariate shift), label frequencies (label shift), and concept drift.  
 - **Alerts**: Trigger notifications when performance degrades.  
 - **Delayed/Partial Labels**: Incorporate user feedback or delayed ground truth as available.  
 - **Human Labeling Pipeline**: Sample uncertain/high-impact predictions to refresh labels.
 
-#### 2.5. Closing the Loop
+##### 2.5. Closing the Loop
 - **Periodic Retraining**: Re-train with new data if performance drops below thresholds.  
 - **Data Maintenance**: Maintain updated, high-quality data sets for incremental model improvements.
 
@@ -239,7 +243,7 @@ optional "difficulty" points you are attempting. -->
 - We plan to implement a modular ETL pipeline that ingests offline image data, applies standardized preprocessing (resizing, normalization, optional segmentation masking), and structures the data with two levels of labels: leaf species and disease type. 
 
 #### 1.4 Online data
-- I will write a listening script to catch data from a directory, and then process using steps similar to process picture to fit our need for different model, but note that there is a segmented picture section in the model, so we need to train a segmentation model for online data only.
+- We will write a listening script to catch data from a directory, and then process using steps similar to process picture to fit our need for different model, but note that there is a segmented picture section in the model, so we need to train a segmentation model for online data only.
 
 
 #### Continuous X (SJ)
