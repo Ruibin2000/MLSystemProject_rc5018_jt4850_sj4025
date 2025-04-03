@@ -25,14 +25,21 @@ infernce time, accuracy, memory usage
 
 As the global population grows, so does the demand for food production. Early and accurate detection of plant diseases is crucial for maintaining crop health and yield. Many agricultural businesses already use imaging tools, but disease diagnosis often relies on manual comparison with libraries or expert consultation—methods that are costly, slow, and difficult to scale.
 
-We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. The system features two classification models and one data segmentation model: 
+We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. 
+The system **composes of several smaller models** that features two classification models and one data segmentation model: 
 1. Model 0 for plant species classification 
 2. Sub-Models for disease identification at specific plant categories. 
 3. Model 1 for data segmantation which aims to improve the prediction performance
-
-This modular design allows efficient retraining on particular scale-up tasks. For instance, only the apple Sub-Model needs re-train if a new disease of apple leaf is found, as the shape of apple leaf is the same.
+   
+These models will work sequentially as shown in the model design diagram and the several sub-models are designed to work parallarly in pipline. (**unit 1 difficuities**)
 
 The value proposition lies in reducing diagnostic time and cost while improving accuracy. Designed to be lightweight and suitable for embedded systems or robots, the model offers a scalable, affordable upgrade to current agricultural practices.
+
+The data set generated from open-source datasets and is re-produced to two different databases for different training tasks. Therefore, the total **data size is median scale**.
+
+
+
+Further more, this modular design allows efficient retraining on particular scale-up tasks. For instance, only the apple Sub-Model needs re-train if a new disease of apple leaf is found, as the shape of apple leaf is the same.
 
 ### Contributors
 
@@ -106,8 +113,18 @@ conditions under which it may be used. -->
 | Plant Categories   |   merge from original plant dataset for plants class    |      used for the Model 0 for plant classification      |
 | Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for Sub-Model diseases detector    |
 | MobileNetV2 |    import from the Pytorch application and finetune                |  candidate for edge user, robot       |
-| EfficientNetB7         |     import from the Pytorch application   |      candidate for the cloud traning (high accuracy)             |
+| EfficientNetB7         |     import from the Pytorch application   |      candidate for the edge user (high accuracy)             |
 | llma 3B, 7B, 13B    | import from openllm as lab | candidate for the cloud training |
+
+All data sets we will are produced from the original dataset from kaggle:
+https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset/data 
+The plantvillage dataset is a plant disease image sets for classification tasks that created 8 years ago by Abdallah Ali and Abdallah Ali. 
+According to the CC BY-NC-SA 4.0 license used by the author, it is free to share and adopt the data set by giving appropriate credit. 
+The original aslo contains the processed segment images for training. 
+
+We also plan to utilize several open-source models from pytorch and openllm libraries. We will train and fine-tune these open model to fit our problems and select the best choice for the embedded system (robot) and cloud computing.
+
+
 
 
 ### Summary of infrastructure requirements (SJ)
