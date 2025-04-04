@@ -274,4 +274,8 @@ optional "difficulty" points you are attempting. -->
 ###### Unit 1: Multi-Models
 ###### Unit 8: Interactive data dashboard
 
+##### Add one more sub-model 
+
+##### Retrain one sub-model add on new label
+
 
