@@ -1,7 +1,7 @@
 # MLSystemProject_rc5018_jt4850_sj4025
 
 
-## Plant leaf health condition detector (RC)
+## Plant leaf health condition detector (RC) （Unit 1 requirement)
 
 <!-- 
 Discuss: Value proposition: Your will propose a machine learning system that can be 
@@ -58,7 +58,7 @@ link to their contributions in all repos here. -->
 
 
 
-### System diagram (JT)
+### System diagram (JT)(Some of Unit 2 requirements)
 
 <!-- Overall digram of system. Doesn't need polish, does need to show all the pieces. 
 Must include: all the hardware, all the containers/software platforms, all the models, 
@@ -100,6 +100,9 @@ graph TD
     A1 --> P1
 ```
 <img src="diagram/system_design.png" alt="system_design" />
+
+Note that our project will run on the Chameleon infrastructure in order to suit the Unit 2 requirment Infrastructure. 
+And this project will be developed as a cloud-native service, which you should expect more information about this in section Continuous X. 
 
 
 ### Summary of outside materials (RC)
@@ -146,7 +149,7 @@ The table below shows an example, it is not a recommendation. -->
 diagram, (3) justification for your strategy, (4) relate back to lecture material, 
 (5) include specific numbers. -->
 
-#### Model training and training platforms (RC)
+#### Model training and training platforms (RC)(Unit 4 and Unit 5)
 
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
@@ -181,7 +184,7 @@ MLFlow experiment tracking server on Chameleon will be hosted to track and evalu
 ##### 2.2 Scheduling training jobs
 Like the lab, a Ray cluster will be implemented and run on the server. The required training jobs will be submitted in pipline.
 
-#### Model Serving and Monitoring Platforms (SJ)
+#### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
 
 <!-- 
 Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
@@ -246,7 +249,7 @@ and which optional "difficulty" points you are attempting.
 
 
 
-### Data pipeline (JT)
+### Data pipeline (JT)(Unit 8)
 
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
 optional "difficulty" points you are attempting. -->
