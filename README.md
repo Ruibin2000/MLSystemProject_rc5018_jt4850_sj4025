@@ -270,12 +270,19 @@ optional "difficulty" points you are attempting. -->
 
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
 optional "difficulty" points you are attempting. -->
+
+Use python-chi to provision compute, networking, and storage in a Git-managed, declarative fashion. All infrastructure definitions (VM size, networks, IPs) reside in a single repository. Post-provisioning, Ansible playbooks install necessary OS dependencies, container runtimes, and orchestrate microservice configurations on each node.
+
+Each microservice is packaged as a Docker container, adhering to a single responsibility and communicating through lightweight APIs. This microservices architecture allows independent updates and scaling based on demand. A centralized CI/CD pipeline automatically trains and tests machine learning models, bundles them into container images, and pushes these images to a registry. It then deploys to a staging environment for integration and performance tests, followed by canary deployment in production. Real user traffic is gradually shifted to the new release; if metrics deviate from set thresholds, the pipeline triggers an automated rollback.
+
+For observability, container logs and performance metrics flow into systems like Prometheus or Elasticsearch. Alerts notify operators of high error rates or latency issues. Incident resolution playbooks live in the same Git repository, ensuring uniform handling of operational events. By combining python-chi for provisioning, Ansible for configuration, and robust CI/CD with staged deployments, this design enables continuous improvement while minimizing risks to the production environment.
+
+
 ##### Difficulty Points
 ###### Unit 1: Multi-Models
 ###### Unit 8: Interactive data dashboard
 
-##### Add one more sub-model 
-
+##### Add one more sub-model
 ##### Retrain one sub-model add on new label
 
 
