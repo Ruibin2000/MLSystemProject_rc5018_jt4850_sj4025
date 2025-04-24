@@ -1,0 +1,1 @@
+ - plants_total datasets, color, used for model 0 plant type classification
