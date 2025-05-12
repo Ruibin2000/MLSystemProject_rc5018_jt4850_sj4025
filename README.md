@@ -153,8 +153,16 @@ This project aims to achieve the multi-class segmentation task on the wild plant
 
 
 #### 2. Training
-The training file is shown at [train.py](./train/train_with_mlflow.py) It is modified from the original sample code to add the mlflow tracking code. 
+The training file is shown at [train.py](./train/train_with_mlflow.py) It is modified from the original sample code to add the mlflow tracking code. It will finnally call the provided config file [plantseg115.py](./train/plantseg115.py). 
 
+#### 3. Experiment tracking
+As shown in the training code, I apply the MLFlow to tack the experiment. The model matrics such as Mean Intersection over Union (mIoU), Overall Accuracy (aAcc) is aimed to logged in the model. However, due to  the dataset labeling mismatch (possible reason), the model cannot be trained correctly at this time. The MLflow UI shows several failed training session and some successful experiments. The model archifacts are saved in the MLFlow.
+
+#### 4. Scheduling training jobs
+The training jobs are submited within a ray cluster within a docker. The [Dockerfile](./train/Dockerfile) contains the training environment setup including the installation of the mmsegment and mmvc libraries. The [docker-compose-ray.yaml](./train/docker-compose-ray.yaml) build up a ray cluster that the training command is running on the ray-head. The dataset is mounted from the persist object storage and then mapped to the specfic location via the yaml settings.
+
+#### 5. Traning strategies (partial)
+The SegNext is a large-scale model that requires much memory. Due to the limit GPU resources, we can only run on the single GPU server (compute_liqid or rtx6000). Additionally, we met the cuda out of memory problem, which required to allocate more GPU memory to the experiment (especially on rtx6000). By reducing the batch size from 16 to 4, the training task successfully run without crashing. Meanwhile, automatic mixed precision (AMP) is enabled in the train code to reduce the memory requirement. 
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
 
