@@ -84,7 +84,7 @@ graph TD
     A2 --> P2
     A1 --> P1
 ```
-<img src="diagram/system_design.png" alt="system_design" />
+<img src="diagram/system_diagram2.png" alt="model design" />
 
 Note that our project will run on the Chameleon infrastructure in order to suit the Unit 2 requirment Infrastructure. 
 And this project will be developed as a cloud-native service, which you should expect more information about this in section Continuous X. 
@@ -133,8 +133,8 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 and which optional "difficulty" points you are attempting. -->
 
 #### 1. Modeling
-
 This project aims to achieve the multi-class segmentation task on the wild plant disease. SegNext showed strong Generalization on Natural Images, which is suitable for the wild plants disease. Additionally, we aim to deploy the model on an edge such as the agricultural robot, segNext has high performance with lightweight design.
+The input of the model is a image, and then the Model will generate a annotation mask for class segmentation with class label
 
 
 #### 2. Training
