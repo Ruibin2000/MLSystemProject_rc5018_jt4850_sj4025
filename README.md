@@ -49,11 +49,11 @@ Then, each row after that is: name of contributor, their role, and in the third 
 you will link to their contributions. If your project involves multiple repos, you will 
 link to their contributions in all repos here. -->
 
-| Name                            | Responsible for | Link to their commits in this repo |
-|---------------------------------|-----------------|------------------------------------|
-| Ruibin Chen                     |  model training |                                    |
-| Shizhen Jia                     |  model serving  |                                    |
-| Jialin Tian                     |  data pipeline  |                                    |
+| Name                            | Responsible for |
+|---------------------------------|-----------------|
+| Ruibin Chen                     |  model training |
+| Shizhen Jia                     |  model serving  |
+| Jialin Tian                     |  data pipeline  |
 
 
 
@@ -111,22 +111,15 @@ And this project will be developed as a cloud-native service, which you should e
 Name of data/model, conditions under which it was created (ideally with links/references), 
 conditions under which it may be used. -->
 
-|              | How it was created | Conditions of use |
-|--------------|--------------------|-------------------|
-| Plant Categories   |   merge from original plant dataset for plants class    |      used for the Model 0 for plant classification      |
-| Diseases Categories   |    extract from plant dataset to create sub datasets of diseases for different plants      |      used for Sub-Model diseases detector    |
-| MobileNetV2 |    import from the Pytorch application and finetune                |  candidate for edge user, robot       |
-| EfficientNetB7         |     import from the Pytorch application   |      candidate for the edge user (high accuracy)             |
-| llma 3B, 7B, 13B    | import from openllm as lab | candidate for the cloud training |
+|                   | How it was created          | Conditions of use                                            |
+| ----------------- | --------------------------- | ------------------------------------------------------------ |
+| Plantseg115       | Download from the website   | Dataset for training                                         |
+| PlantSeg(SegNext) | Git clone from the git repo | The training engine and framework that used to train and validate the model |
 
-All data sets we will are produced from the original dataset from kaggle:
-https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset/data 
-The plantvillage dataset is a plant disease image sets for classification tasks that created 8 years ago by Abdallah Ali and Abdallah Ali. 
-According to the CC BY-NC-SA 4.0 license used by the author, it is free to share and adopt the data set by giving appropriate credit. 
-The original aslo contains the processed segment images for training. 
-
-We also plan to utilize several open-source models from pytorch and openllm libraries. We will train and fine-tune these open model to fit our problems and select the best choice for the embedded system (robot) and cloud computing.
-
+The dataset is downloaded from the Zenodo https://zenodo.org/records/14935094 
+the author is 
+While the Training framework PlantSeg is downloaded from the git repo https://github.com/tqwei05/PlantSeg.git
+with respect to the author Wei el. 
 
 
 
@@ -154,35 +147,13 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
 
-#### 1. Model traning at scale
-##### 1.1 Train and re-train
-Our selected candidate models can be trained on the required datasets and fine-tuned at scale to fit specific dataset for better performance. For large model training, we plan to use mutiple GPU to accelarate the training process.
-With the benefit of our design on the two cascading classification models, further discovered diseases of a specific plant only need to re-train the Sub-Models without training on model 0. It is easy for re-training.
+#### 1. Modeling
+
+This project aims to achieve the multi-class segmentation task on the wild plant disease. SegNext showed strong Generalization on Natural Images, which is suitable for the wild plants disease. Additionally, we aim to deploy the model on an edge such as the agricultural robot, segNext has high performance with lightweight design.
 
 
-##### 1.2 well-justified choices for modeling.
-For Model 0 which classifies the type of the plants, the model needs to train on a large dataset. While the Sub-Models may train on the smaller datasets but requires higher accuracy.
-Additionally, the performance of Sub-Models on specific disease can be different. 
-These model will be compared and selected based on the test datasets performance (especially for higher accuracy)
 
-#### 2. Model training infrastructure and platform 
-##### 2.1 Experiment tracking
-The following training plan are proposed to run:
-- MobileNetV2 trains on the plant categories
-- MobileNetV2 trains on the disease categories
-- EfficientNetB7 trains on the plant categories
-- EfficientNetB7 trains on the disease categories
-- llma 3B trains on the plant categories
-- llma 3B trains on the disease categories
-- llma 7B trains on the plant categories
-- llma 7B trains on the disease categories
-- llma 13B trains on the plant categories
-- llma 13B trains on the disease categories
 
-MLFlow experiment tracking server on Chameleon will be hosted to track and evaluate the experiment details
-
-##### 2.2 Scheduling training jobs
-Like the lab, a Ray cluster will be implemented and run on the server. The required training jobs will be submitted in pipline.
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
 
