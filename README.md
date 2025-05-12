@@ -152,7 +152,8 @@ and which optional "difficulty" points you are attempting. -->
 This project aims to achieve the multi-class segmentation task on the wild plant disease. SegNext showed strong Generalization on Natural Images, which is suitable for the wild plants disease. Additionally, we aim to deploy the model on an edge such as the agricultural robot, segNext has high performance with lightweight design.
 
 
-
+#### 2. Training
+The training file is shown at [train.py](./train/train_with_mlflow.py)
 
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
