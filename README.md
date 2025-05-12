@@ -84,7 +84,7 @@ graph TD
     A2 --> P2
     A1 --> P1
 ```
-<img src="diagram/system_diagram2.jpg" alt="model design" />
+<img src="diagram/system_diagram2.jpg" alt="model design" style = "zoom:40%;" />
 
 Note that our project will run on the Chameleon infrastructure in order to suit the Unit 2 requirment Infrastructure. 
 And this project will be developed as a cloud-native service, which you should expect more information about this in section Continuous X. 
@@ -215,21 +215,25 @@ and which optional "difficulty" points you are attempting.
 
 
 ### Data pipeline (JT)(Unit 8)
-You can read the file for a more detailed walk thorgh of dapa pipeline https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/create_vm_for_data_pipeline.ipynb
+You can read the file for a more detailed walk thorgh of dapa pipeline https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/create_vm_for_data_pipeline.ipynb.  
+and also the set up for block for mlflow is avablible here https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/docker-compose-block.yaml
 
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
 optional "difficulty" points you are attempting. -->
 #### 1.1 Persisten storage
-- To satify this persisten storage, we used chi@tacc to store our data and also our data that was trained and all the artifacts we have such as models. The trained model will be pushed by mlflow in dir /mnt/block/minio_data and the command is available at 
+- To satify this persisten storage, we used chi@tacc to store our data and also our data that was trained and all the artifacts we have such as models. The trained model will be pushed by mlflow in dir /mnt/block/minio_data and the command is available at this file here https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/create_vm_for_data_pipeline.ipynb
 
 #### 1.2 Offline data 
-- We will
+- We will store our data that for training like pictures, josn file in /mnt/object, this data was create by the following data pipelins(using etl)
 
 #### 1.3 Data pipelines 
-- We plan to implement a modular ETL pipeline that ingests offline image data, applies standardized preprocessing (resizing, normalization, optional segmentation masking), and structures the data with two levels of labels: leaf species and disease type. 
+- We plan to implement a modular ETL pipeline that ingests offline image data, no need for changing the file structure cause the data was great for training. and the code can be see here for build up the docker.
+- https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/docker-compose-etl
 
 #### 1.4 Online data
-- We will write a listening script to catch data from a directory, and then process using steps similar to process picture to fit our need for different model, but note that there is a segmented picture section in the model, so we need to train a segmentation model for online data only.
+- we plan to depoly our model on a mass GPU for online cloud serving, which can be see here https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/data_coming_gpu.py
+- and also depoly our model on edge device, which the simulate incoming data can be view here https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/edge_data_incoming.py
+- and the different between this 2 is the edge only takes 1 pic every 30s, and gpu can take 200 pic in 1 batch. that is because our model is a bit huge for edge device, so I set the number as this. 
 
 
 #### Continuous X (SJ)
