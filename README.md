@@ -22,24 +22,9 @@ status quo used in the business or service
 infernce time, accuracy, memory usage
 -->
 
-
-As the global population grows, so does the demand for food production. Early and accurate detection of plant diseases is crucial for maintaining crop health and yield. Many agricultural businesses already use imaging tools, but disease diagnosis often relies on manual comparison with libraries or expert consultation—methods that are costly, slow, and difficult to scale.
-
-We propose a machine learning system that integrates into existing agricultural workflows to automate plant disease detection from leaf images. 
-The system **composes of several smaller models** that features two classification models and one data segmentation model: 
-1. Model 0 for plant species classification 
-2. Sub-Models for disease identification at specific plant categories. 
-3. Model 1 for data segmantation which aims to improve the prediction performance
-   
-These models will work sequentially as shown in the model design diagram and the several sub-models are designed to work parallarly in pipline. (**unit 1 difficuities**)
-
-The value proposition lies in reducing diagnostic time and cost while improving accuracy. Designed to be lightweight and suitable for embedded systems or robots, the model offers a scalable, affordable upgrade to current agricultural practices.
-
-The data set generated from open-source datasets and is re-produced to two different databases for different training tasks. Therefore, the total **data size is median scale**.
-
-
-
-Further more, this modular design allows efficient retraining on particular scale-up tasks. For instance, only the apple Sub-Model needs re-train if a new disease of apple leaf is found, as the shape of apple leaf is the same.
+This project aims to build a large-scale, real-time plant disease segmentation model designed for integration into Solix Ag Robotics platforms. By leveraging high-resolution, close-range plant imagery, the model can accurately identify and localize a wide variety of crop diseases. This enables Solix’s robotic arms to perform targeted pesticide application or flag severely infected crops for manual intervention. Although the system does not currently map specific pesticides to plant types, it significantly enhances operational efficiency through precise, automated disease response.
+Our value proposition lies in providing an intelligent, scalable vision solution that improves crop health monitoring, reduces chemical usage, and supports data-driven agricultural automation. The model is optimized for edge deployment, making it ideal not only for large field robotics but also for future lightweight greenhouse systems envisioned by Solinftec.
+This project is developed using open-source resources, including the PlantSeg dataset—featuring detailed, ground-level images of diseased plants—and publicly available code repositories hosted on GitHub, ensuring transparency, reproducibility, and extensibility.
 
 ### Contributors
 
