@@ -153,7 +153,7 @@ This project aims to achieve the multi-class segmentation task on the wild plant
 
 
 #### 2. Training
-The training file is shown at [train.py](./train/train_with_mlflow.py)
+The training file is shown at [train.py](./train/train_with_mlflow.py) It is modified from the original sample code to add the mlflow tracking code. 
 
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
