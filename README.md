@@ -215,14 +215,15 @@ and which optional "difficulty" points you are attempting.
 
 
 ### Data pipeline (JT)(Unit 8)
+You can read the file for a more detailed walk thorgh of dapa pipeline https://github.com/Ruibin2000/MLSystemProject_rc5018_jt4850_sj4025/blob/main/dapa_pipeline/create_vm_for_data_pipeline.ipynb
 
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
 optional "difficulty" points you are attempting. -->
 #### 1.1 Persisten storage
-- The lab 8 haven't be released yet, but I assume we everyting inclueding model traning artifacts, test artifacts, models, container images and data can be stored on Chameloeon. 
+- To satify this persisten storage, we used chi@tacc to store our data and also our data that was trained and all the artifacts we have such as models. The trained model will be pushed by mlflow in dir /mnt/block/minio_data and the command is available at 
 
 #### 1.2 Offline data 
-- We will set up our data locally, and then upload it to Chameloeon for future traning and also so everyone in our group can access it. 
+- We will
 
 #### 1.3 Data pipelines 
 - We plan to implement a modular ETL pipeline that ingests offline image data, applies standardized preprocessing (resizing, normalization, optional segmentation masking), and structures the data with two levels of labels: leaf species and disease type. 
