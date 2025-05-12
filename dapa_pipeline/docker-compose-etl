@@ -1,0 +1,56 @@
+name: plantprotector-etl
+
+volumes:
+  plantprotector:
+
+services:
+  extract-data:
+    container_name: etl_extract_data
+    image: python:3.11
+    user: root
+    volumes:
+        - /home/cc/plantsegv3.zip:/data/plantsegv3.zip
+        - plantprotector:/data/output
+    working_dir: /data
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+
+        echo "Resetting output directory..."
+        rm -rf /data/output/*
+        mkdir -p /data/output
+
+        echo "Unzipping local dataset..."
+        unzip -q /data/plantsegv3.zip -d /data/output
+
+        echo "Listing contents of /data/output after extract stage:"
+        ls -l /data/output
+
+  load-data:
+    container_name: etl_load_data
+    image: rclone/rclone:latest
+    volumes:
+      - plantprotector:/data
+      - ~/.config/rclone/rclone.conf:/root/.config/rclone/rclone.conf:ro
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        if [ -z "$RCLONE_CONTAINER" ]; then
+          echo "ERROR: RCLONE_CONTAINER is not set"
+          exit 1
+        fi
+        echo "Cleaning up existing contents of container..."
+        rclone delete chi_tacc:$RCLONE_CONTAINER --rmdirs || true
+
+        rclone copy /data/plantsegv3 chi_tacc:$RCLONE_CONTAINER \
+        --progress \
+        --transfers=32 \
+        --checkers=16 \
+        --multi-thread-streams=4 \
+        --fast-list
+
+        echo "Listing directories in container after load stage:"
+        rclone lsd chi_tacc:$RCLONE_CONTAINER
