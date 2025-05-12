@@ -84,7 +84,7 @@ graph TD
     A2 --> P2
     A1 --> P1
 ```
-<img src="diagram/system_diagram2.png" alt="model design" />
+<img src="diagram/system_diagram2.jpg" alt="model design" />
 
 Note that our project will run on the Chameleon infrastructure in order to suit the Unit 2 requirment Infrastructure. 
 And this project will be developed as a cloud-native service, which you should expect more information about this in section Continuous X. 
