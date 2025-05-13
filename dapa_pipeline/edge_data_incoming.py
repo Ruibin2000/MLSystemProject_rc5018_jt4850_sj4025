@@ -11,7 +11,7 @@ image_paths = glob(os.path.join(image_dir, "*.jpg"))#get a pic
 for image_path in image_paths:
     with open(image_path, "rb") as f:
         files = {"file": f}
-        response = requests.post(FLASK_URL, files=files)
+        response = requests.post(FAST_URL, files=files)
     
     if response.status_code == 200:
         print(f"[OK] {os.path.basename(image_path)}")
