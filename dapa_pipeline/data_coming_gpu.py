@@ -19,7 +19,7 @@ for i in range(0, len(image_paths), batch_size):
     encoded_images = [encode_image(p) for p in batch_paths]
 
     payload = {"images": encoded_images}
-    response = requests.post(FASTAPI_URL, json=payload)
+    response = requests.post(FAST_URL, json=payload)
 
     if response.status_code == 200:
         print(f"[OK] {os.path.basename(image_path)}")
