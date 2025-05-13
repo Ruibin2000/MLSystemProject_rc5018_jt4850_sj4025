@@ -3,8 +3,8 @@ import os
 import time
 from glob import glob
 
-FLASK_URL = "http://your_flask_server:5000/predict"  # place holder for api address which I dont have now
-image_dir = "/mnt/object/images/train/"  # our data
+FAST_URL = "http://192.5.86.161:8500/predict"  # place holder for your fast api
+image_dir = "/mnt/object-uc/images/train/"  # our data
 
 image_paths = glob(os.path.join(image_dir, "*.jpg"))#get a pic
 
