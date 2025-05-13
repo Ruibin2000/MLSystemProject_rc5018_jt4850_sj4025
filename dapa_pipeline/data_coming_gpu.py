@@ -3,8 +3,8 @@ import base64
 import os
 from glob import glob
 
-FASTAPI_URL = "http://your_fastapi_server:5000/predict"
-image_dir = "/mnt/object/images/train/"
+FAST_URL = "http://192.5.86.161:8500/predict"  # place holder for your fast api
+image_dir = "/mnt/object-uc/images/train/"  # our data
 image_paths = glob(os.path.join(image_dir, "*.jpg"))
 
 def encode_image(path):
