@@ -22,6 +22,6 @@ for i in range(0, len(image_paths), batch_size):
     response = requests.post(FAST_URL, json=payload)
 
     if response.status_code == 200:
-        print(f"[OK] {os.path.basename(image_path)}")
+        print(f"[OK] {os.path.basename(image_paths)}")
     else:
-        print(f"[FAIL] {os.path.basename(image_path)} - Status {response.status_code}")
+        print(f"[FAIL] {os.path.basename(image_paths)} - Status {response.status_code}")
