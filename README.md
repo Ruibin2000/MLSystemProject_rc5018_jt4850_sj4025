@@ -134,20 +134,35 @@ and which optional "difficulty" points you are attempting. -->
 
 #### 1. Modeling
 This project aims to achieve the multi-class segmentation task on the wild plant disease. SegNext showed strong Generalization on Natural Images, which is suitable for the wild plants disease. Additionally, we aim to deploy the model on an edge such as the agricultural robot, segNext has high performance with lightweight design.
-The input of the model is a image, and then the Model will generate a annotation mask for class segmentation with class label
 
+Precisely figuring out the disease and the location is a typical multi class segmentation problem. The model will take a picture as the input and then apply the segmentation on the pixels. Therefore, the model is trained based on an image and its relative annotation mask. On the mask, the pixels related to the diseases will be labeled with specific class id. And other pixels are labeled as 0, the background. The model learned how to label the pixels and segment the picture to show the disease. 
+
+During the inference stage, the model takes an image as input and output the annotation. The mask than can be drawn added to the image to visualize the labeling results. The Robotics can utilize the segmentation results to operate on the plants.
 
 #### 2. Training
-The training file is shown at [train.py](./train/train_with_mlflow.py) It is modified from the original sample code to add the mlflow tracking code. It will finnally call the provided config file [plantseg115.py](./train/plantseg115.py). 
+The model utilized the mmseg engine, which supports modular model selection. On the base code of the segNext, I added the MLFlow tracking process to log the experiment settings and log the best final results. 
+
+The training file is shown at [train.py](./train/train.py) It is modified from the original sample code to add the mlflow tracking code. It will finnally call the provided dataset file [plantseg115.py](./train/plantseg115.py) and the config file [segnext_mscan-t_1xb16-adamw-40k_plantseg115-512x512.py](./train/segnext_mscan-t_1xb16-adamw-40k_plantseg115-512x512.py)
 
 #### 3. Experiment tracking
 As shown in the training code, I apply the MLFlow to tack the experiment. The model matrics such as Mean Intersection over Union (mIoU), Overall Accuracy (aAcc) is aimed to logged in the model. However, due to  the dataset labeling mismatch (possible reason), the model cannot be trained correctly at this time. The MLflow UI shows several failed training session and some successful experiments. The model archifacts are saved in the MLFlow.
 
 #### 4. Scheduling training jobs
-The training jobs are submited within a ray cluster within a docker. The [Dockerfile](./train/Dockerfile) contains the training environment setup including the installation of the mmsegment and mmvc libraries. The [docker-compose-ray.yaml](./train/docker-compose-ray.yaml) build up a ray cluster that the training command is running on the ray-head. The dataset is mounted from the persist object storage and then mapped to the specfic location via the yaml settings.
+I build up the ray-cluster on the single compute liqid GPU node. Use rclone to mount the dataset from the object storage. Customized the [Dockerfile](./train/Dockerfile) to install required dependencies for segNext experiment. Design the docker-compose file [docker-compose-ray.yaml](./train/docker-compose-ray.yaml) to mount the data, code repo and build up the ray containers. 
 
 #### 5. Traning strategies (partial)
-The SegNext is a large-scale model that requires much memory. Due to the limit GPU resources, we can only run on the single GPU server (compute_liqid or rtx6000). Additionally, we met the cuda out of memory problem, which required to allocate more GPU memory to the experiment (especially on rtx6000). By reducing the batch size from 16 to 4, the training task successfully run without crashing. Meanwhile, automatic mixed precision (AMP) is enabled in the train code to reduce the memory requirement. 
+Due to the limitation GPU resources, we could only train on a A100 40GB gpu server, which cannot meet the best training requirements. For example, the initial batch size is 16, which immediately get the CUDA out of the memory. Hence, I reduce the batch size to 8 and 4. The larger batch is designed to have higher speed. Hence, I turned on the amp (Automatic Mixed Precision), but it extremely prolong the training time. The amp may cost additional overhead for small batch size. Therefore, I reduce the batch size and increase the iteration times. 
+
+
+
+| Batch size | AMP  | Iteration times | mIoU    | aAcc    | mAcc  | Training time |
+| ---------- | ---- | --------------- | ------- | ------- | ----- | ------------- |
+| 16         |      |                 |         |         |       | Fail          |
+| 4          | No   | 10 k            | 19.4000 | 86.0900 | 29.42 | 1h 6m         |
+| 8          | Yes  | 10 k            | 30.5300 | 87.5800 | 43.76 | 1h 36m        |
+| 4          | No   | 20 k            |         |         |       |               |
+
+
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
 
