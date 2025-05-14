@@ -154,14 +154,14 @@ I build up the ray-cluster on the single compute liqid GPU node. Use rclone to m
 Due to the limitation GPU resources, we could only train on a A100 40GB gpu server, which cannot meet the best training requirements. For example, the initial batch size is 16, which immediately get the CUDA out of the memory. Hence, I reduce the batch size to 8 and 4. The larger batch is designed to have higher speed. Hence, I turned on the amp (Automatic Mixed Precision), but it extremely prolong the training time. The amp may cost additional overhead for small batch size. Therefore, I reduce the batch size and increase the iteration times. 
 
 
-
 | Batch size | AMP  | Iteration times | mIoU    | aAcc    | mAcc  | Training time |
 | ---------- | ---- | --------------- | ------- | ------- | ----- | ------------- |
 | 16         |      |                 |         |         |       | Fail          |
 | 4          | No   | 10 k            | 19.4000 | 86.0900 | 29.42 | 1h 6m         |
 | 8          | Yes  | 10 k            | 30.5300 | 87.5800 | 43.76 | 1h 36m        |
-| 4          | No   | 20 k            |         |         |       |               |
+| 4          | No   | 20 k            | 28.0100 | 87.0100 | 42.01 | 2h 12m        |
 
+For the further plan, I will select to train on Batch size 8 with more iteration rounds.
 
 
 #### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
