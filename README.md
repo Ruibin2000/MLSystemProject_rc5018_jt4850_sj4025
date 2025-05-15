@@ -117,7 +117,7 @@ The table below shows an example, it is not a recommendation. -->
 | Requirement     | How many/when                                     | Justification |
 |-----------------|---------------------------------------------------|---------------|
 | `m1.medium` VMs | 3 for entire project duration                     | ...           |
-| `gpu_mi100`     | 4 hour block twice a week                         |               |
+| `gpu_rtx6000`    | 6 hour block twice a week                         |               |
 | Floating IPs    | 1 for entire project duration, 1 for sporadic use |               |
 | etc             |                                                   |               |
 
