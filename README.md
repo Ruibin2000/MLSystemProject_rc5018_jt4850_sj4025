@@ -214,24 +214,31 @@ Available endpoints include:
 - `POST /predict_pth_mask/` — Run PTH inference and return a color segmentation mask  
 - `GET /metrics/` — Export Prometheus-compatible metrics
 
-##### 1.2. Key Requirements
-- **Latency**: Sub-500ms response for single images.  
-- **Throughput**: 5–10 concurrent requests in a cloud environment.
 
-##### 1.3. Model Optimizations
-- **Graph Compilation**: Operator fusion, constant folding, hardware-specific kernels.  
-- **Reduced Precision**: FP16/INT8 quantization.  
-- **Pruning / Distillation** (optional): Further compression for faster inference.
+##### 1.2. Model Performance
 
-##### 1.4. System Optimizations
-- **Warm Starts**: Keep models loaded in memory for minimal startup latency.  
-- **Concurrent Execution**: Multiple replicas (auto-scaling) with load balancing.  
-- **Dynamic Batching**: Combine requests for improved GPU/CPU utilization.  
-- **Ensembling** (extra complexity): If multiple models are needed, trade off added latency for higher accuracy.
+We evaluated the SegNeXt model under both GPU and CPU environments. On GPU, the model achieves a median inference latency of **41.89 ms** and a throughput of **23.68 FPS**, making it suitable for near real-time applications. In contrast, CPU inference is significantly slower, with a median latency of **775.14 ms** and throughput of only **1.30 FPS**. These results highlight the strong dependency of high-resolution semantic segmentation models on hardware acceleration.
 
-##### 1.5. Deployment
-- **Cloud**: Scalable, powerful hardware; subject to network latency.  
-- **Edge**: Low/no network latency; typically requires smaller, resource-friendly models.
+##### 1.3. ONNX Model
+
+The ONNX-exported model significantly reduces disk size to **187.20 MB** while maintaining competitive inference performance on GPU. It achieves a median latency of **39.22 ms** and single-sample throughput of **25.03 FPS**, comparable to the original PyTorch model. However, the mIoU drops to **27.28%**, indicating a trade-off between portability and segmentation quality.
+
+
+##### 1.4. ONNX Model after Quantized
+
+The dynamically quantized ONNX model has a size of 49.67 MB, achieves 81.88% pixel accuracy and 0.88% mIoU. Its median inference latency is 1872.40 ms (95th percentile: 1898.49 ms), with a throughput of 0.53 FPS for single images and 0.55 FPS for batch size 4.
+
+##### 1.5. Serving on Edge Device
+
+Both the original and dynamically quantized ONNX models were deployed on a Raspberry Pi using `CPUExecutionProvider` to evaluate edge inference performance.
+
+The original model achieved a median latency of 3706.01 ms and 0.22 FPS, while the quantized version had a median latency of 9162.68 ms and 0.12 FPS.  
+Despite the reduced model size, dynamic quantization did not improve performance on this edge device due to CPU-bound execution and limited hardware acceleration.
+
+
+
+
+
 
 <!-- --- -->
 
