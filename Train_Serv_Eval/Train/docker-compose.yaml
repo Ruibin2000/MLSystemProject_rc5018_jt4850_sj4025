@@ -1,0 +1,49 @@
+version: "3.9"
+
+volumes:
+  checkpoints:
+  dataset:
+    external: true  # 可选：使用预先创建的挂载卷或路径
+
+services:
+  plantseg-gpu:
+    build: .
+    shm_size: '16g'
+    container_name: plantseg_sev_gpu
+    runtime: nvidia
+    ports:
+      - "8899:8888"  # 浏览器访问 http://<ip>:8899
+    volumes:
+      - ./PlantSeg:/workspace/PlantSeg              # PlantSeg 源码
+      - ./checkpoints:/workspace/checkpoints        # 训练输出
+      - /mnt/object:/workspace/PlantSeg/data/plantseg115        # 挂载你的数据路径（真实路径！）
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: >
+      jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.token=''
+    restart: unless-stopped
+  # 新增的 FastAPI 模型推理服务
+  model-serving:
+    build:
+      context: .
+      dockerfile: docker-serving/Dockerfile
+    container_name: model_serving
+    ports:
+      - "8500:8000"
+    volumes:
+      - ./model.pth:/app/model.pth
+      - ./model.onnx:/app/model.onnx
+      - ./app.py:/app/app.py
+      - ./PlantSeg:/app/PlantSeg
+    restart: unless-stopped
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: unless-stopped
