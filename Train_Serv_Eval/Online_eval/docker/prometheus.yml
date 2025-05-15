@@ -1,0 +1,17 @@
+#global:
+#  scrape_interval: 15s
+
+#scrape_configs:
+#  - job_name: 'food11'
+#    static_configs:
+#      - targets: ['fastapi_server:8000']                                                                                                                                       
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "remote-fastapi"
+    static_configs:
+      - targets: ["192.5.86.161:8500"]  # 远程 FastAPI 的 IP 和端口
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['192.5.86.161:8080']
