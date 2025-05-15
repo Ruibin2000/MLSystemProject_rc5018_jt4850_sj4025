@@ -164,18 +164,55 @@ Due to the limitation GPU resources, we could only train on a A100 40GB gpu serv
 For the further plan, I will select to train on Batch size 8 with more iteration rounds.
 
 
-#### Model Serving and Monitoring Platforms (SJ)(Unit 6 and Unit 7)
 
-<!-- 
-Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
-and which optional "difficulty" points you are attempting. 
--->
+#### Model Serving and Monitoring Platforms (Unit 6 and Unit 7)
+
+To fulfill the requirements of Unit 6 and Unit 7, we implemented the following setup:
+
+- **Dataset Access**  
+  Following the instructions in `Access_dataset_at_training.md`, we used `reclone` to mount the dataset located on Chi@TACC at `/mnt/object/`.
+
+- **GPU Node Deployment**  
+  On the GPU node, we used [`docker-compose.yaml`](./Train_Serv_Eval/Train/docker-compose.yaml) to launch the following containers:  
+  `plantseg-gpu`, `model-serving`, and `cadvisor`.  
+  During initialization, the repository [`tqwei05/PlantSeg`](https://github.com/tqwei05/PlantSeg) is cloned into the `PlantSeg` directory, and the dataset from `/mnt/object` is mounted to `PlantSeg/data/plantseg115`.
+
+- **Model Training**  
+  The following files were added to the `PlantSeg` directory:  
+  `offline_eval_with_cm.py` and `Model_serving.ipynb`.
+
+  Additionally, `PlantSeg/tools/train.py` was modified to include:
+  ```python
+  import mmseg.datasets.plantseg115
+  ```
+
+  Train the model using the following command:
+  ```bash
+  PYTHONPATH=. CUDA_VISIBLE_DEVICES=0 python tools/train.py \
+  configs/segnext/segnext_mscan-l_1xb16-adamw-40k_plantseg115-512x512.py
+  ```
+
+
 
 #### 1. Model Serving
 
 ##### 1.1. API Endpoint
-- Unified REST API (FastAPI/Flask) wraps both the leaf-variety and disease-classification models.  
-- Receives an image, routes to the appropriate model(s), and returns the final disease prediction.
+The PlantSeg Serving API is accessible via:
+
+```
+http://<server_ip>:8500/
+```
+
+Once deployed, the FastAPI server provides a Swagger UI at `/docs` for interactive API usage:
+
+Available endpoints include:
+
+- `POST /predict/` — Run ONNX model inference and return prediction as JSON  
+- `POST /predict_mask/` — Run ONNX inference and return a color segmentation mask  
+- `GET /list_models/` — List all available ONNX models  
+- `POST /predict_pth/` — Run PTH model inference and return prediction as JSON  
+- `POST /predict_pth_mask/` — Run PTH inference and return a color segmentation mask  
+- `GET /metrics/` — Export Prometheus-compatible metrics
 
 ##### 1.2. Key Requirements
 - **Latency**: Sub-500ms response for single images.  
@@ -201,31 +238,43 @@ and which optional "difficulty" points you are attempting.
 #### 2. Evaluation & Monitoring
 
 ##### 2.1. Offline Evaluation
-- **General Metrics**: Loss, accuracy, F1; domain-specific (BLEU, ROUGE, perplexity).  
-- **Slice-Based Evaluation**: Performance on subsets (rare diseases, specific leaf varieties).  
-- **Operational Metrics**: Inference latency, throughput, memory footprint, retraining cost/time.  
-- **Behavioral Testing**: Template-based tests verifying robustness to benign perturbations.  
-- **Explainability**: SHAP, LIME, saliency maps.  
-- **Regression Testing**: Verify fixes for known errors remain fixed.
 
-##### 2.2. Automated Testing Pipeline
-- Integrate all offline tests into a CI/CD pipeline.  
-- Optional **human-in-the-loop** or **GenAI-in-the-loop** for deeper or “red team” testing.
+On the same GPU node used for training, we perform offline evaluation using [`offline_eval_with_cm.py`](./Train_Serv_Eval/Train/offline_eval_with_cm.py) to generate a **confusion matrix** for the predicted segmentation results.  
+This allows for quantitative assessment of model performance across different plant disease classes.
+
+
 
 ##### 2.3. Online Evaluation
-- **Shadow Testing**: Duplicate live user requests to the new model (not shown to users).  
-- **Canary Testing**: Route a small fraction of live traffic to the new model, monitor key metrics.  
-- **A/B Testing**: Split production traffic and measure business metrics (CTR, revenue).
 
-##### 2.4. Production Monitoring
-- **Drift Detection**: Monitor input distribution (covariate shift), label frequencies (label shift), and concept drift.  
-- **Alerts**: Trigger notifications when performance degrades.  
-- **Delayed/Partial Labels**: Incorporate user feedback or delayed ground truth as available.  
-- **Human Labeling Pipeline**: Sample uncertain/high-impact predictions to refresh labels.
+We deploy a monitoring stack to evaluate the runtime performance of the model in production:
 
-##### 2.5. Closing the Loop
-- **Periodic Retraining**: Re-train with new data if performance drops below thresholds.  
-- **Data Maintenance**: Maintain updated, high-quality data sets for incremental model improvements.
+- **Prometheus** is launched to monitor the FastAPI server running on the GPU node, collecting model-serving metrics such as request latency, throughput, and error rates.
+- **cAdvisor** is used to track the resource usage (CPU, memory, GPU) of all containers running on the GPU node.
+- **Grafana** provides a centralized dashboard to visualize and correlate both model-level and system-level metrics in real time.
+
+This setup enables continuous online evaluation of inference performance and system health.
+
+
+
+##### 2.4. Closing the Loop
+On the KVM node, we deploy a Flask API (available at `http://<server_ip>:5000/`) which acts as a frontend interface to the FastAPI server running on the GPU node. It handles forwarding user image inputs to the backend model and returns:
+
+- The predicted plant disease class  
+- Pixel-wise class distribution  
+- Latency information  
+- Segmentation mask image
+
+All original input images and the corresponding predicted masks are uploaded to the **MinIO `plantseg-upload` bucket** (`http://<server_ip>:9001/`).  
+The original image entries are tagged with the predicted class (`predict_label`) and confidence score (`confidence`) provided by FastAPI.
+
+The contents of the MinIO bucket are automatically synchronized with **Label Studio** (`http://<server_ip>:8080/`), where two projects are maintained:
+
+- A **classification** project for rapid, large-scale validation of model predictions  
+- A **segmentation** project for detailed pixel-wise corrections, useful for generating high-quality annotations to retrain the model
+
+This human-in-the-loop workflow enables both model validation and incremental improvement via additional labeled data.
+
+
 
 
 
@@ -251,7 +300,7 @@ optional "difficulty" points you are attempting. -->
 - and the different between this 2 is the edge only takes 1 pic every 30s, and gpu can take 200 pic in 1 batch. that is because our model is a bit huge for edge device, so I set the number as this. 
 
 
-#### Continuous X (SJ)
+#### Continuous X 
 
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
 optional "difficulty" points you are attempting. -->
@@ -264,10 +313,9 @@ For observability, container logs and performance metrics flow into systems like
 
 
 ##### Difficulty Points
-###### Unit 1: Multi-Models
-###### Unit 8: Interactive data dashboard
 
-##### Add one more sub-model
-##### Retrain one sub-model add on new label
+###### Unit 6: Serving for edge device
+
+
 
 
